@@ -490,9 +490,11 @@ static void os_state_indicate(void) {
 #    endif
 }
 
+#define CHOSENCOLOR RGB_GOLD
+
 bool LED_INDICATORS_KB(void) {
     if (get_transport() == TRANSPORT_BLUETOOTH) {
-        /* Prevent backlight flash caused by key activities */
+        //Prevent backlight flash caused by key activities 
         if (battery_is_critical_low()) {
             SET_ALL_LED_OFF();
              return false;
@@ -532,6 +534,20 @@ bool LED_INDICATORS_KB(void) {
 
     } else
         os_state_indicate();
+
+
+    if (host_keyboard_led_state().caps_lock) {
+
+        rgb_matrix_set_color(50, CHOSENCOLOR); //Caps Lock Key
+
+        rgb_matrix_set_color(66, CHOSENCOLOR); //c
+        rgb_matrix_set_color(51, CHOSENCOLOR); //a
+        rgb_matrix_set_color(43, CHOSENCOLOR); //p
+        rgb_matrix_set_color(52, CHOSENCOLOR); //s
+        rgb_matrix_set_color(42, CHOSENCOLOR); //o
+        rgb_matrix_set_color(69, CHOSENCOLOR); //n
+
+    }
 
    return false;
 }
