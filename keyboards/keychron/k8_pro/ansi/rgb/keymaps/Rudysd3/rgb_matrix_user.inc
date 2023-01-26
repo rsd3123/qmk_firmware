@@ -1,25 +1,45 @@
-// !!! DO NOT ADD #pragma once !!! //
 
-// Step 1.
-// Declare custom effects using the RGB_MATRIX_EFFECT macro
-// (note the lack of semicolon after the macro!)
-RGB_MATRIX_EFFECT(simple_custom_effect)
+#ifdef RGB_MATRIX_KEYREACTIVE_ENABLED
 
-// Step 2.
-// Define effects inside the `RGB_MATRIX_CUSTOM_EFFECT_IMPLS` ifdef block
+//Enter the colors you want here:
+#define PRIMARYCOLOR RGB_PURPLE //Color when not hit
+#define SECONDARYCOLOR RGB_GOLD //Color when hit
+
+RGB_MATRIX_EFFECT(simple)
+
 #ifdef RGB_MATRIX_CUSTOM_EFFECT_IMPLS
 
-// e.g: A simple effect, self-contained within a single method
-static bool simple_custom_effect(effect_params_t* params) {
-  RGB_MATRIX_USE_LIMITS(led_min, led_max);
-  for (uint8_t i = led_min; i < led_max; i++) {
-    rgb_matrix_set_color(i, RGB_PURPLE);
-  }
-  if(keyPressed){
-    rgb_matrix_set_color(i, RGB_GOLD);
-  }
-  return rgb_matrix_check_finished_leds(led_max);
+static bool simple(effect_params_t* params) {
+    RGB_MATRIX_USE_LIMITS(led_min, led_max);
+
+    uint16_t max_tick = 65535 / rgb_matrix_config.speed;
+    for (uint8_t i = led_min; i < led_max; i++) {
+        RGB_MATRIX_TEST_LED_FLAGS();
+        uint16_t tick = max_tick;
+
+        bool hit = false;
+        
+        // Reverse search to find most recent key hit
+        for (int8_t j = g_last_hit_tracker.count - 1; j >= 0; j--) {
+            if (g_last_hit_tracker.index[j] == i && g_last_hit_tracker.tick[j] < tick) {
+                //tick = g_last_hit_tracker.tick[j];
+                hit = true;
+                break;
+            }
+        }
+
+      
+        if(hit){
+          rgb_matrix_set_color(i, SECONDARYCOLOR);
+        }
+        else{
+          rgb_matrix_set_color(i, PRIMARYCOLOR);
+        }
+    }
+    return led_max <  DRIVER_1_LED_COUNT +  DRIVER_2_LED_COUNT;
 }
 
+#        endif // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
+#endif         // RGB_MATRIX_KEYREACTIVE_ENABLED
 
-#endif // RGB_MATRIX_CUSTOM_EFFECT_IMPLS
+

@@ -43,7 +43,8 @@
  * https://docs.qmk.fm/#/feature_rgb_matrix?id=rgb-matrix-effects
  */
 
-#    define RGB_MATRIX_KEYPRESSES
+//#    define RGB_MATRIX_KEYPRESSES
+#    define RGB_MATRIX_KEYRELEASES
 #    define RGB_MATRIX_FRAMEBUFFER_EFFECTS
 
 //#    define ENABLE_RGB_MATRIX_ALPHAS_MODS
